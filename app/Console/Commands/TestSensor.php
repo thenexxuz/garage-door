@@ -30,8 +30,8 @@ class TestSensor extends Command
         do {
             unset($result);
             exec("sudo raspi-gpio get 27 | awk '{print $3}'", $result);
-	    echo $result[0] . PHP_EOL;
-	} while($result[0] === 'level=1');
+	        echo $result[0] . PHP_EOL;
+	    } while($result[0] === 'level=1');
     }
 }
 
