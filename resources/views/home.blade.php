@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <canvas id="door" width="100" height="100"></canvas>
+                    <canvas id="door" width="100" height="100" data-state="open"></canvas>
                 </div>
             </div>
         </div>
@@ -26,16 +26,21 @@
 <script>
     const canvas = $("#door")[0];
     const ctx = canvas.getContext("2d");
-    let GarageDoor = {
-        state: 3
-    };
     $('document').ready(function() {
         ctx.fillStyle = "rgb(42, 159, 214)";
 
         drawOpen();
 
         $('#door').click(function() {
-            toggleDoor();
+            switch ($('#door').data('state')) {
+                case 'open':
+                    closeDoor();
+                    break;
+                case 'closed':
+                    openDoor();
+                    break;
+                default: break;
+            }
         });
     });
 
@@ -49,7 +54,6 @@
         ctx.fillRect(0, 25, 20, 75);
         ctx.fillRect(0, 25, 100, 10);
         ctx.fillRect(80, 25, 20, 75);
-        GarageDoor.state = 3;
     }
 
     function drawClosed() {
@@ -58,15 +62,11 @@
         ctx.fillRect(25, 55, 50, 10);
         ctx.fillRect(25, 70, 50, 10);
         ctx.fillRect(25, 85, 50, 10);
-        GarageDoor.state = 0;
     }
 
-    function toggleDoor() {
-        closeDoor();
-    }
     function closeDoor() {
-        console.log('close');
-        GarageDoor.state = 1;
+        console.log('closing');
+        $('#door').data('state', 'closing');
         if (canvas.getContext) {
             for(let i = 0; i < 5; i++) {
                 for (let j = 0; j < 5; j++) {
@@ -78,7 +78,7 @@
                                 drawOpen();
                             } else {
                                 console.log('closed');
-                                openDoor();
+                                $('#door').data('state', 'closed');
                             }
                         }
                     }, 1000*j + 5000*i);
@@ -88,8 +88,8 @@
     }
 
     function openDoor() {
-        console.log('open');
-        GarageDoor.state = 2;
+        console.log('opening');
+        $('#door').data('state', 'opening');
         if (canvas.getContext) {
             for(let i = 0; i < 5; i++) {
                 for (let j = 0; j < 5; j++) {
@@ -101,6 +101,7 @@
                                 drawClosed();
                             } else {
                                 console.log('opened');
+                                $('#door').data('state', 'open');
                             }
                         }
                     }, 1000*j + 5000*i);
