@@ -25,13 +25,15 @@ class TestSensor extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         do {
             unset($result);
             exec("sudo raspi-gpio get 27 | awk '{print $3}'", $result);
 	        echo $result[0] . PHP_EOL;
 	    } while($result[0] === 'level=1');
+
+        return 0;
     }
 }
 
