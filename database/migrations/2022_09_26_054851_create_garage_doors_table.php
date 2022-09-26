@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('garage_doors', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', [
+            $table->text('name');
+            $table->enum('state', [
                 'closed',
                 'opening',
                 'open',
