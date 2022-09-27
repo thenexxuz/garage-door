@@ -10,7 +10,9 @@ class GarageDoorController extends Controller
 {
     public function show(int $id): JsonResponse
     {
-        return response()->json(GarageDoor::findOrFail($id));
+        $garageDoor = GarageDoor::findOrFail($id);
+        $garageDoor->setState();
+        return response()->json($garageDoor);
     }
 
     public function trigger(int $id): JsonResponse
