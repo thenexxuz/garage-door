@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class LoginController extends Controller
 {
@@ -19,7 +23,10 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers {
+        AuthenticatesUsers::login as authLogin;
+        AuthenticatesUsers::logout as authLogout;
+    }
 
     /**
      * Where to redirect users after login.
@@ -36,5 +43,22 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(Request $request): Response|JsonResponse|RedirectResponse
+    {
+        $response = $this->authLogin($request);
+        auth()->user()->generateAndSaveApiAuthToken();
+        return $response;
+    }
+
+    public function logout(Request $request)
+    {
+        $user = auth()->guard('api')->user();
+        if ($user) {
+            $user->api_token = null;
+            $user->save();
+        }
+        return $this->authLogout($request);
     }
 }

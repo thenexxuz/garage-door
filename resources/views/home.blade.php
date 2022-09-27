@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <canvas id="door" width="100" height="100" data-state="open"></canvas>
+                    <canvas id="door" width="100" height="100"></canvas>
                 </div>
             </div>
         </div>
@@ -26,10 +26,15 @@
 <script>
     const canvas = $("#door")[0];
     const ctx = canvas.getContext("2d");
+    $.ajaxSetup({
+        headers: {
+            'X-API-TOKEN': '{!! auth()->user()->api_token !!}',
+        }
+    });
     $('document').ready(function() {
         ctx.fillStyle = "rgb(42, 159, 214)";
 
-        drawOpen();
+        checkState();
 
         $('#door').click(function() {
             switch ($('#door').data('state')) {
@@ -43,6 +48,44 @@
             }
         });
     });
+
+    function checkState() {
+        $.ajax({
+            url: '/api/garage-door/1',
+            success: function(data) {
+                switch (data.state) {
+                    case 'open':
+                        drawOpen();
+                        setTimeout(function () {
+                            $('#door').data('state', 'open');
+                        }, 200);
+                        break;
+                    case 'closed':
+                        drawClosed();
+                        setTimeout(function () {
+                            $('#door').data('state', 'closed');
+                        }, 200);
+                        break;
+                    default: break;
+                }
+            },
+            failure: function(data) {
+                console.dir('fail');
+            }
+        });
+    }
+
+    function triggerDoor() {
+        $.ajax({
+            url: '/api/garage-door/trigger/1',
+            success: function(data) {
+                console.dir('success');
+            },
+            failure: function(data) {
+                console.dir('fail');
+            }
+        });
+    }
 
     function drawOpen() {
         ctx.clearRect(0, 0, 100, 100);
@@ -65,8 +108,8 @@
     }
 
     function closeDoor() {
-        console.log('closing');
         $('#door').data('state', 'closing');
+        triggerDoor();
         if (canvas.getContext) {
             for(let i = 0; i < 5; i++) {
                 for (let j = 0; j < 5; j++) {
@@ -77,8 +120,8 @@
                             if (i < 4) {
                                 drawOpen();
                             } else {
-                                console.log('closed');
                                 $('#door').data('state', 'closed');
+                                checkState();
                             }
                         }
                     }, 1000*j + 5000*i);
@@ -88,8 +131,8 @@
     }
 
     function openDoor() {
-        console.log('opening');
         $('#door').data('state', 'opening');
+        triggerDoor();
         if (canvas.getContext) {
             for(let i = 0; i < 5; i++) {
                 for (let j = 0; j < 5; j++) {
@@ -100,8 +143,8 @@
                             if (i < 4) {
                                 drawClosed();
                             } else {
-                                console.log('opened');
                                 $('#door').data('state', 'open');
+                                checkState();
                             }
                         }
                     }, 1000*j + 5000*i);

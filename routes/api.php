@@ -14,6 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('garage-door/{id}', [App\Http\Controllers\GarageDoorController::class, 'show'])->middleware('apiToken');
+Route::get('garage-door/trigger/{id}', [App\Http\Controllers\GarageDoorController::class, 'trigger'])->middleware('apiToken');
