@@ -16,15 +16,13 @@ class GarageDoor extends Model
         // then high then low again
         exec("sudo raspi-gpio set 22 a5");
         sleep(0.1);
-        exec("sudo raspi-gpio set 22 op pn dl");
-        sleep(0.25);
-        exec("sudo raspi-gpio set 22 a5");
-        sleep(0.1);
         exec("sudo raspi-gpio set 22 op pn dh");
-        sleep(0.25);
+        sleep(1);
         exec("sudo raspi-gpio set 22 a5");
         sleep(0.1);
         exec("sudo raspi-gpio set 22 op pn dl");
+        sleep(0.1);
+        exec("sudo raspi-gpio set 22 a5");
     }
 
     public function setState()
