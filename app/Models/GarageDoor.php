@@ -27,7 +27,7 @@ class GarageDoor extends Model
         exec("sudo raspi-gpio set 22 op pn dl");
     }
 
-    public function getState()
+    public function setState()
     {
         exec("sudo raspi-gpio get 27 | awk '{print $3}'", $output);
         $this->state = ($output[0] === 'level=1') ? 'closed' : 'open';

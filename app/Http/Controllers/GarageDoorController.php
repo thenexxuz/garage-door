@@ -17,6 +17,8 @@ class GarageDoorController extends Controller
     {
         $garageDoor = GarageDoor::findOrFail($id);
         $garageDoor->trigger();
-
+        sleep(3);
+        $garageDoor->setState();
+        return response()->json(GarageDoor::findOrFail($id));
     }
 }
